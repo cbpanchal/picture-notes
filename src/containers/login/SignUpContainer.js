@@ -1,3 +1,5 @@
+/* eslint jsx-a11y/label-has-for: 0 */
+
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -9,38 +11,39 @@ import * as action from "../../actions/loginAction";
 class SignUpContainer extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            email: '',
-            password: '',
-        };
-        this.handleInput = this.handleInput.bind(this);
         this.signUp = this.signUp.bind(this);
     }
 
-    handleInput(event) {
-        this.setState({
-            [event.target.name]: event.target.value
-        })
-    }
-
-    signUp() {
+    signUp(formValues) {
         const { signup } = this.props;
-        const { ...values } = this.state;
-        const email = values.email;
-        const password = values.password;
-        signup({
-            email,
-            password
-        });
+        const { email, password, confirmPassword } = formValues;
+        if(password === confirmPassword) {
+            signup({
+                email,
+                password
+            });
+        }
     }
 
     render() {
-        return (
-            <SignUp handleInput={this.handleInput} signUp={this.signUp}/>
-        );
+        const { isLoading } = this.props;
+        return <SignUp onSubmit= {this.signUp} isLoading={isLoading}/>;
     }
 }
 
+SignUpContainer.propTypes = {
+    signup: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool
+};
+
+SignUpContainer.defaultProps = {
+    isLoading: false
+};
+
+const mapStateToProps = state => ({
+    isLoading: state.user.isLoading
+});
+  
 const mapDispatchToProps = dispatch => 
     bindActionCreators(
         {
@@ -49,4 +52,4 @@ const mapDispatchToProps = dispatch =>
         dispatch
     );
 
-export default connect(null, mapDispatchToProps)(SignUpContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpContainer);

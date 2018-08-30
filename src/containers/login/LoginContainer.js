@@ -9,45 +9,58 @@ import * as action from "../../actions/loginAction";
 class LoginContainer extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            email : "",
-            password: ""
-        };
-        this.handelInput = this.handelInput.bind(this); 
         this.login = this.login.bind(this); 
+        this.googleLogin = this.googleLogin.bind(this);
     }
 
-    handelInput(event) {
-        this.setState({
-            [event.target.name]: event.target.value
-        });
-    }
-
-    login() {
+    login(formValues) {
         const { login } = this.props;
-        const { ...values } = this.state;
-        const email = values.email;
-        const password = values.password;
+        const { email, password } = formValues;
         login ({
             email,
             password
         });
     }       
 
+    googleLogin() {
+        const { googleLogin } = this.props;
+        googleLogin()
+    }
+
     render() {
+        const { isLoading } = this.props;
         return (
-            <Login handelInput={this.handelInput} login={this.login} />
+            <Login 
+              onSubmit={this.login} 
+              googleLogin ={this.googleLogin}
+              isLoading={isLoading}
+            />
         );
     }
 }
 
+LoginContainer.prototypes = {
+    login: PropTypes.func.isRequired,
+    googleLogin: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool
+};
+
+LoginContainer.defaultProps = {
+    isLoading: false
+};
+
+const mapStateToProps = state => ({
+    isLoading: state.user.isLoading
+});
+  
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       login: action.login,
+      googleLogin: action.googleLogin
     },
     dispatch
   );
 
 
-export default connect(null, mapDispatchToProps)(LoginContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginContainer);

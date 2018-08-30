@@ -1,47 +1,54 @@
-import firebase from "../config/Fire";
+import firebase, { googleAuthProvider } from "../config/Fire";
 
 import * as actionTypes from "../constants/actionTypes";
 
 export const setUser = () => dispatch =>
-  new Promise(resolve => {
     firebase.auth().onAuthStateChanged(authUser => {
       if (!authUser) {
         dispatch({
           type: actionTypes.SET_USER,
           payload: null
         });
-        resolve(authUser);
       } else {
         dispatch({
           type: actionTypes.SET_USER,
           payload: authUser
         });
-        resolve(authUser);
       }
-    });
 });
 
-export const login = credentials => dispatch => {
-    firebase
-        .auth()
-        .signInWithEmailAndPassword(credentials.email, credentials.password)
-        .then(auth => {
-            dispatch({
-                type: actionTypes.LOGIN,
-                payload: auth.user
-            });
-        })
+export const login = credentials => async dispatch => {
+  dispatch({
+    type: actionTypes.SHOW_LOADER
+  });
+  await firebase
+    .auth()
+    .signInWithEmailAndPassword(credentials.email, credentials.password)
+    .then(auth => {
         dispatch({
-            type: actionTypes.LOGIN
+            type: actionTypes.LOGIN,
+            payload: auth.user
         });
+    })
+    .catch(() => {
+      dispatch({
+        type: actionTypes.LOGIN
+      });
+    })
+    dispatch({
+        type: actionTypes.LOGIN
+    });
 };
 
-export const signup = formData => dispatch => {
-    firebase
+export const signup = formData => async dispatch => {
+    dispatch({
+      type: actionTypes.SHOW_LOADER
+    });
+    await firebase
       .auth()
       .createUserWithEmailAndPassword(formData.email, formData.password)
       .then( res => {
-          debugger;
+        console.log(res);
       })
       .catch(error => {
         dispatch({
@@ -57,4 +64,37 @@ export const signup = formData => dispatch => {
     dispatch({
       type: actionTypes.SIGNUP
     });
+  };
+
+  export function logout () {
+    firebase.auth().signOut();
+    return {
+      type: actionTypes.LOGOUT
+    };
+  };
+
+  export const googleLogin = () => async dispatch => {
+    dispatch({
+      type: actionTypes.SHOW_LOADER
+    });
+    await firebase
+      .auth()
+      .signInWithPopup(googleAuthProvider)
+      .then(res => {
+          console.log(res);
+      })
+      .catch(error => {
+          dispatch({
+            type: '',
+            payload: {
+              level: "error",
+              title: "Login failed",
+              message: error.message,
+              position: "tr"
+            }
+          });
+      });
+      dispatch({
+        type: actionTypes.GOOGLE_LOGIN
+      });
   };

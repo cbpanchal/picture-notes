@@ -5,3 +5,9 @@ export const LOGOUT = "LOGOUT";
 export const LOGIN = "LOGIN";
 export const SIGNUP = "SIGNUP";
 export const GOOGLE_LOGIN = "GOOGLE_LOGIN";
+
+
+/* Common Actions */
+
+export const SHOW_LOADER = "SHOW_LOADER";
+

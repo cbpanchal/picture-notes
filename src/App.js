@@ -6,10 +6,9 @@ import store from './store/store';
 import WrappedComponent from "./hoc/WrappedComponent";
 
 import Home from './containers/home/Home';
-import Login from './containers/login/LoginContainer';
-import Signup from './containers/login/SignUpContainer';
+import LoginContainer from './containers/login/LoginContainer';
+import SignUpContainer from './containers/login/SignUpContainer';
 import './App.css';
-import SignUp from './components/login/SignUp';
 
 const App = () => (
   <Provider store = {store}>
@@ -17,8 +16,8 @@ const App = () => (
       <div className="App">
         <Switch>
           <Route exact path="/" component={ WrappedComponent(Home) } />
-          <Route path="/login" component={ WrappedComponent(Login) } />
-          <Route path="/signup" component={ WrappedComponent(SignUp) } />
+          <Route path="/login" component={ WrappedComponent(LoginContainer) } />
+          <Route path="/signup" component={ WrappedComponent(SignUpContainer) } />
         </Switch>
       </div>
     </Router>

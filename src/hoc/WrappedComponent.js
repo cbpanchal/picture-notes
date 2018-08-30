@@ -34,12 +34,13 @@ export default function isAuthenticated(WrappedComponent) {
 
   const MapStateToProps = state => ({
     isAuthUser: state.user.isAuthUser,
+    user: state.user.user
   });
 
   const mapDispatchToProps = dispatch =>
     bindActionCreators(
       {
-        setUser: loginAction.setUser,
+        setUser: loginAction.setUser
       },
       dispatch
     );
