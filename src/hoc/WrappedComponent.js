@@ -32,7 +32,7 @@ export default function isAuthenticated(WrappedComponent) {
     }
   }
 
-  const MapStateToProps = state => ({
+  const mapStateToProps = state => ({
     isAuthUser: state.user.isAuthUser,
     user: state.user.user
   });
@@ -57,7 +57,7 @@ export default function isAuthenticated(WrappedComponent) {
   };
 
   return connect(
-    MapStateToProps,
+    mapStateToProps,
     mapDispatchToProps
   )(authentication);
 }

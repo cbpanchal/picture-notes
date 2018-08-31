@@ -15,7 +15,7 @@ const LoaderContainer = styled.div`
   }
 `;
 
-const loaderColor = "#00d8ff";
+const loaderColor = "#6d1b7b";
 
 class Loader extends React.PureComponent {
   render() {

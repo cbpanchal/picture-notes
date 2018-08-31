@@ -7,52 +7,52 @@ import Login from "../../components/login/Login";
 import * as action from "../../actions/loginAction";
 
 class LoginContainer extends Component {
-    constructor(props) {
-        super(props);
-        this.login = this.login.bind(this); 
-        this.googleLogin = this.googleLogin.bind(this);
-    }
+  constructor(props) {
+    super(props);
+    this.login = this.login.bind(this);
+    this.googleLogin = this.googleLogin.bind(this);
+  }
 
-    login(formValues) {
-        const { login } = this.props;
-        const { email, password } = formValues;
-        login ({
-            email,
-            password
-        });
-    }       
+  login(formValues) {
+    const { login } = this.props;
+    const { email, password } = formValues;
+    login({
+      email,
+      password
+    });
+  }
 
-    googleLogin() {
-        const { googleLogin } = this.props;
-        googleLogin()
-    }
+  googleLogin() {
+    const { googleLogin } = this.props;
+    googleLogin();
+  }
 
-    render() {
-        const { isLoading } = this.props;
-        return (
-            <Login 
-              onSubmit={this.login} 
-              googleLogin ={this.googleLogin}
-              isLoading={isLoading}
-            />
-        );
-    }
+  render() {
+    const { isLoading } = this.props;
+    return (
+      <Login
+        onSubmit={this.login}
+        googleLogin={this.googleLogin}
+        isLoading={isLoading}
+      />
+    );
+  }
 }
 
-LoginContainer.prototypes = {
-    login: PropTypes.func.isRequired,
-    googleLogin: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool
+LoginContainer.propTypes = {
+  login: PropTypes.func.isRequired,
+  googleLogin: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool
 };
 
 LoginContainer.defaultProps = {
-    isLoading: false
+  isLoading: false
 };
 
 const mapStateToProps = state => ({
-    isLoading: state.user.isLoading
+  isLoading: state.user.isLoading
 });
-  
+
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
@@ -62,5 +62,7 @@ const mapDispatchToProps = dispatch =>
     dispatch
   );
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LoginContainer);

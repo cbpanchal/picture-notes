@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import googleLogo from "./logos/google.svg";
 
-
 export const LoginFormContainer = styled.div`
   width: 100%;
   height: 100%;

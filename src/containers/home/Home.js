@@ -1,44 +1,30 @@
-import React from "react";
+import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import * as action from "../../actions/loginAction";
-import { bindActionCreators } from 'redux';
 
-class Home extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.handleLogout = this.handleLogout.bind(this);
-    }
+import Loader from "../loader/Loader";
 
-    handleLogout () {
-        const { logout } = this.props;
-        logout();
-    }
-
-    render() {
-        return (
-            <div>
-                <h1>Home Page</h1>
-                <button onClick={this.handleLogout}>Log out</button>
-            </div>
-        );
-    }
+class Home extends PureComponent {
+  render() {
+    const { isLoading } = this.props;
+    return (
+      <div>
+        <Loader isLoading={isLoading} />
+      </div>
+    );
+  }
 }
 
-Home.prototypes = {
-    logout: PropTypes.func.isRequired
+Home.propTypes = {
+  isLoading: PropTypes.bool
+};
+
+Home.defaultProps = {
+  isLoading: false
 };
 
 const mapStateToProps = state => ({
-    isAuthUser: state.user.isAuthUser,
+  isLoading: state.user.isLoading
 });
 
-const mapDispatchToProps = dispatch => 
-    bindActionCreators(
-        {
-            logout: action.logout
-        },
-        dispatch
-    );
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps)(Home);
