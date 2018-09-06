@@ -13,3 +13,7 @@ export const SHOW_LOADER = "SHOW_LOADER";
 /* Notification Actions */
 
 export const SHOW_NOTIFICATION = "SHOW_NOTIFICATION";
+
+/* Picture Notes */
+
+export const UPLOAD_IMAGE = "UPLOAD_IMAGE";

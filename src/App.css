@@ -31,3 +31,10 @@
 .hiddne {
   display: none;
 }
+
+.dropzone {
+  width: 100%;
+  height: 20%;
+  border: 2px dashed #6d1b7b;
+  margin-bottom: 20px;
+}

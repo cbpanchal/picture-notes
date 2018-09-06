@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { RingLoader } from "react-spinners";
 import styled from "styled-components";
 
+
 const LoaderContainer = styled.div`
   position: absolute;
   display: flex;
