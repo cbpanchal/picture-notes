@@ -38,3 +38,7 @@
   border: 2px dashed #6d1b7b;
   margin-bottom: 20px;
 }
+
+.pull-right {
+  float: right;
+}

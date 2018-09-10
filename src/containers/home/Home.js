@@ -5,6 +5,7 @@ import AddButton from '../../components/picturenotes/AddButton';
 import PictureNotesModal from '../../components/picturenotes/PictureNotesModal';
 
 import Loader from "../loader/Loader";
+import PictureNotesListContainer from "../picturenotes/PictureNotesListContainer";
 
 class Home extends PureComponent {
 
@@ -31,6 +32,7 @@ render() {
   return (
     <div>
       <Loader isLoading={isLoading} />
+      <PictureNotesListContainer />
       <AddButton handleOpen = {this.handleOpen}/>
       <PictureNotesModal 
         open= {this.state.open} 

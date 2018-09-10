@@ -17,3 +17,4 @@ export const SHOW_NOTIFICATION = "SHOW_NOTIFICATION";
 /* Picture Notes */
 
 export const UPLOAD_IMAGE = "UPLOAD_IMAGE";
+export const GET_PICTURENOTES = "GET_PICTURENOTES";

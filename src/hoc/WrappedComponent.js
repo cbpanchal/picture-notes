@@ -4,6 +4,7 @@ import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 
 import * as loginAction from "../actions/loginAction";
+import * as pictureNoteAction from "../actions/pictureNotesAction";
 
 export default function isAuthenticated(WrappedComponent) {
   class authentication extends Component {
@@ -13,7 +14,8 @@ export default function isAuthenticated(WrappedComponent) {
     }
 
     componentWillReceiveProps(nextProps) {
-      const { history } = this.props;
+      const { history, fetchPictureNotes } = this.props;
+      fetchPictureNotes(nextProps.isAuthUser);
       if (
         nextProps.isAuthUser &&
         (history.location.pathname === "/login" ||
@@ -40,7 +42,8 @@ export default function isAuthenticated(WrappedComponent) {
   const mapDispatchToProps = dispatch =>
     bindActionCreators(
       {
-        setUser: loginAction.setUser
+        setUser: loginAction.setUser,
+        fetchPictureNotes: pictureNoteAction.getPictureNotes
       },
       dispatch
     );
@@ -48,6 +51,7 @@ export default function isAuthenticated(WrappedComponent) {
   authentication.propTypes = {
     setUser: PropTypes.func.isRequired,
     isAuthUser: PropTypes.bool,
+    fetchPictureNotes: PropTypes.func.isRequired,
     history: PropTypes.instanceOf(Object)
   };
 
