@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import PictureNotesGridList from "../../components/picturenotes/PictureNotesGridList";
+import PictureNotesCard from "../../components/picturenotes/PictureNotesCard";
 
 class PictureNotesListContainer extends Component {
   constructor(props) {
@@ -10,15 +10,12 @@ class PictureNotesListContainer extends Component {
       pictureNotes: []
     };
   }
-
-  componentDidMount() {
-  }
-
+  
   render() {
     const { pictureNotes } = this.props;
     return (
       <div>
-        <PictureNotesGridList pictureNotes={pictureNotes} />
+        <PictureNotesCard pictureNotes={pictureNotes} />
       </div>
     );
   }

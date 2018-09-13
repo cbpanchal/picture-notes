@@ -5,9 +5,24 @@ import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 
 import styled from "styled-components";
-import { Button } from "@material-ui/core";
+import { Button, Input, withStyles, TextField } from "@material-ui/core";
 import Loader from "../loader/Loader";
 import * as action from "../../actions/pictureNotesAction";
+
+const styles = theme => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  input: {
+    margin: theme.spacing.unit,
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200,
+  },
+});
 
 class PictureNotesContainer extends Component {
   constructor(props) {
@@ -16,53 +31,106 @@ class PictureNotesContainer extends Component {
     this.state = {
       filesToBeSent: [],
       filesPreview: [],
-      printcount: 10,
       imageSelected: true,
-      image: null,
-      imageUrl: ""
+      image: [],
+      imageUrl: "",
+      inputs: []
     };
     this.uploadHandler = this.uploadHandler.bind(this);
+    this.handleInput = this.handleInput.bind(this);
   }
 
   onDrop(acceptedFiles, rejectedFiles) {
+    const { classes } = this.props;
     // console.log('Accepted files: ', acceptedFiles[0].name);
-    console.log(acceptedFiles[0]);
-    const filesToBeSent = this.state.filesToBeSent;
-    if (filesToBeSent.length < this.state.printcount) {
-      filesToBeSent.push(acceptedFiles);
+    console.log(acceptedFiles);
+    if (!acceptedFiles.length) {
+      return null;
+    } else {
+      const filesToBeSent = this.state.filesToBeSent;
+      acceptedFiles.map(file => {
+        filesToBeSent.push(file);
+      });
       const filesPreview = [];
-      for (const i in filesToBeSent) {
-        filesPreview.push(
-          <div key={i}>
-            <ImageWrapper
-              src={filesToBeSent[i][0].preview}
-              alt="image preview"
-            />
-            {filesToBeSent[i][0].name}
-          </div>
-        );
-      }
+      filesToBeSent.map((f,i) => 
+          filesPreview.push(
+            <div key={i}>
+                <ImageWrapper
+                  src={filesToBeSent[i].preview}
+                  alt="image preview"
+                />
+                <Input
+                  name={`title_${i}`}
+                  placeholder="Title"
+                  className={classes.input}
+                  inputProps={{
+                    'aria-label': 'Title',
+                  }}
+                  onChange={(e) => this.handleInput(e, i)}
+                />
+                <TextField
+                  placeholder="Notes"
+                  name={`note_${i}`}
+                  multiline
+                  rowsMax="4"
+                  className={classes.textField}
+                  margin="normal"
+                  onChange={(e) => this.handleInput(e, i)}
+                />
+            </div>
+          ) 
+      );  
       this.setState({
         filesToBeSent,
         filesPreview,
         imageSelected: false,
-        image: acceptedFiles[0]
-      });
-    } else {
-      alert("You have reached the limit of printing files at a time");
+        images: filesToBeSent
+      }); 
     }
   }
 
-  uploadHandler() {
-    const { image } = this.state;
-    const { uploadHandler, close } = this.props;
+  handleInput(event, i) {
+    const { inputs } = this.state;
+    const inputName = event.target.name;
+    const inputValue = event.target.value;
+    const name = inputName.split("_").shift();
+    if (inputs[i] !== undefined){
+      inputs[i] = {
+        ...inputs[i],
+        [name]: inputValue
+      }
+    } else if(inputs[i] === undefined){
+      inputs[i] = {
+        [name]: inputValue
+      }
+    }
+    this.setState({inputs})
+  }
 
-    uploadHandler(image, close);
-    // close();
+  uploadHandler() {
+    const { images } = this.state;
+    const { uploadHandler, savePictureNote, close } = this.props;
+    const inputArray = this.state.inputs;
+    console.log(inputArray);
+    uploadHandler(images, close)
+      .then(res => {
+        const saveData = res.map((id, index) => 
+          [id, inputArray[index]]
+        );
+        console.log(saveData);
+        saveData.map((note, i) => {
+          setTimeout(() => {
+            savePictureNote(note);
+          }, 2000);
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   render() {
-    const { isLoading } = this.props;
+    const { isLoading, close } = this.props;
     return (
       <div>
         <Loader loading={isLoading} />
@@ -71,17 +139,16 @@ class PictureNotesContainer extends Component {
             className="dropzone"
             onDrop={files => this.onDrop(files)}
             accept="image/jpeg,image/jpg,image/tiff,image/gif,image/png"
-            multiple={false}
             disableClick={false}
+            multiple={true}
           >
             <div>
               Try dropping some files here, or click to select files to upload.
             </div>
           </Dropzone>
-          <div>
-            Image:
+          <ImageContainer>
             {this.state.filesPreview}
-          </div>
+          </ImageContainer>
           <div>
             <Button
               variant="contained"
@@ -90,7 +157,14 @@ class PictureNotesContainer extends Component {
               disabled={this.state.imageSelected}
               onClick={this.uploadHandler}
             >
-              Upload
+              Save Note
+            </Button>
+            <Button 
+              size="small"
+              color="primary"
+              onClick={close}
+            >
+              close
             </Button>
           </div>
         </PictureNotesWrapper>
@@ -101,7 +175,16 @@ class PictureNotesContainer extends Component {
 
 PictureNotesContainer.propTypes = {
   uploadHandler: PropTypes.func.isRequired,
-  close: PropTypes.func.isRequired
+  savePictureNote: PropTypes.func.isRequired,
+  close: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired,
+  title: PropTypes.string.isRequired,
+  note: PropTypes.string.isRequired
+};
+
+PictureNotesContainer.defaultProps = {
+  title: "",
+  note: "",
 };
 
 const mapStateToProps = state => ({
@@ -111,7 +194,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      uploadHandler: action.uploadImage
+      uploadHandler: action.uploadImage,
+      savePictureNote: action.savePictureNote
     },
     dispatch
   );
@@ -119,13 +203,18 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PictureNotesContainer);
+)(withStyles(styles)(PictureNotesContainer));
 
 const PictureNotesWrapper = styled.div`
   padding-top: 25px;
 `;
 
 const ImageWrapper = styled.img`
-  width: 400px;
-  height: 400px;
+  width: 200px;
+  height: 200px;
+`;
+
+const ImageContainer = styled.div`
+  display: inline-grid;
+  grid-template-columns: repeat(3, 1fr);
 `;
