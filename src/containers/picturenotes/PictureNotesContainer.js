@@ -121,7 +121,7 @@ class PictureNotesContainer extends Component {
         saveData.map((note, i) => {
           setTimeout(() => {
             savePictureNote(note);
-          }, 2000);
+          }, 3000);
         });
       })
       .catch(error => {
