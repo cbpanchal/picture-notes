@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 import PictureNotesCard from "../../components/picturenotes/PictureNotesCard";
 import PictureNotesEditCard from "../../components/picturenotes/PictureNotesEditCard";
+import * as action from "../../actions/pictureNotesAction";
+import { DragDropContext } from 'react-beautiful-dnd';
 
 class PictureNotesListContainer extends Component {
   constructor(props) {
@@ -14,6 +17,8 @@ class PictureNotesListContainer extends Component {
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.removePictureNote = this.removePictureNote.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   handleClick(pictureNote) {
@@ -27,12 +32,44 @@ class PictureNotesListContainer extends Component {
     this.setState({ open: false });
   };  
 
+  removePictureNote(pictureNote) {
+    const { removePictureNote } = this.props;
+    removePictureNote(pictureNote);
+  }
+
+  onDragEnd(result) {
+    const { destination, source, type } = result;
+    console.log(result);
+    if (!destination) {
+      return;
+    }
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+    const { rearrangePictureNotes, pictureNotes } = this.props;
+    pictureNotes.splice(
+      destination.index,
+      0,
+      pictureNotes.splice(source.index, 1)[0]
+    );
+    rearrangePictureNotes(pictureNotes);
+  }
+
   render() {
     const { pictureNotes } = this.props;
     const { open, pictureNote } = this.state;
     return (
       <div>
-        <PictureNotesCard pictureNotes={pictureNotes} handleClick={this.handleClick} />
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <PictureNotesCard 
+            pictureNotes={pictureNotes}
+            handleClick={this.handleClick} 
+            removePictureNote={this.removePictureNote}
+          />
+        </DragDropContext>
         <PictureNotesEditCard open={open} close={this.handleClose} pictureNote={pictureNote}/>
       </div>
     );
@@ -52,7 +89,16 @@ const mapStateToProps = state => ({
   pictureNotes: state.pictureNote.pictureNotes
 });
 
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      removePictureNote: action.removePictureNote,
+      rearrangePictureNotes: action.rearrangePictureNotes
+    },
+    dispatch
+  );
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(PictureNotesListContainer);

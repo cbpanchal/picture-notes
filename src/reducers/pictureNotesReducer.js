@@ -24,6 +24,10 @@ export default function(state = initialState, action) {
         ...state,
         pictureNotes: payload
       };
+    case a.UPDATE_PICTURENOTES:
+      return {
+        ...state,
+      };
     default:
       return state;
   }

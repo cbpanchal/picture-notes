@@ -9,7 +9,7 @@ const styles = theme => ({
     position: "absolute",
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
-    padding: theme.spacing.unit * 4
+    padding: 18
   }
 });
 
@@ -31,7 +31,7 @@ class PictureNotesModal extends PureComponent {
           }}
         >
           <PictureNotesCardWrapper className={classes.paper}>
-            <Typography variant="title" id="modal-title">
+            <Typography variant="title" id="modal-title" component="h1">
               Picture note
             </Typography>
             <PictureNotesDropZone close={close} />

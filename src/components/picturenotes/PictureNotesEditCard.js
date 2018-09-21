@@ -26,7 +26,7 @@ const styles = theme => ({
     padding: 0,
   },
   card: {
-    maxWidth: 345,
+    maxWidth: 350,
     borderRadius: 0
   },
   media: {
@@ -126,7 +126,7 @@ class PictureNotesEditCard extends PureComponent {
                 <Overdrive id={id || "null"}>
                   <CardMedia
                     className={classes.media}
-                    image={image}
+                    image={image || "null"}
                     title=""
                   />
                 </Overdrive>
@@ -190,7 +190,6 @@ PictureNotesEditCard.defaultProps = {
   open: false,
   pictureNote: {},
   id: '',
-  defaultValue: ''
 };
 
 const mapDispatchToProps = dispatch =>

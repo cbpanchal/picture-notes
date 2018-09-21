@@ -8,6 +8,7 @@ import styled from "styled-components";
 import { Button, Input, withStyles, TextField } from "@material-ui/core";
 import Loader from "../loader/Loader";
 import * as action from "../../actions/pictureNotesAction";
+import "../../style/PictureNotesStyle.css";
 
 const styles = theme => ({
   container: {
@@ -34,7 +35,8 @@ class PictureNotesContainer extends Component {
       imageSelected: true,
       image: [],
       imageUrl: "",
-      inputs: []
+      inputs: [],
+      isClassAdded: false
     };
     this.uploadHandler = this.uploadHandler.bind(this);
     this.handleInput = this.handleInput.bind(this);
@@ -51,10 +53,15 @@ class PictureNotesContainer extends Component {
       acceptedFiles.map(file => {
         filesToBeSent.push(file);
       });
+      if(filesToBeSent.length > 3) {
+        this.setState({
+          isClassAdded: true,
+        })
+      }
       const filesPreview = [];
       filesToBeSent.map((f,i) => 
           filesPreview.push(
-            <div key={i}>
+            <div key={i} className="Grid">
                 <ImageWrapper
                   src={filesToBeSent[i].preview}
                   alt="image preview"
@@ -69,7 +76,7 @@ class PictureNotesContainer extends Component {
                   onChange={(e) => this.handleInput(e, i)}
                 />
                 <TextField
-                  placeholder="Notes"
+                  placeholder="Take a note"
                   name={`note_${i}`}
                   multiline
                   rowsMax="4"
@@ -118,11 +125,16 @@ class PictureNotesContainer extends Component {
           [id, inputArray[index]]
         );
         console.log(saveData);
-        saveData.map((note, i) => {
-          setTimeout(() => {
-            savePictureNote(note);
-          }, 3000);
-        });
+        // const saveNotePromises = saveData.map((note, i) => {
+        //     savePictureNote(note);
+        // });
+        // Promise.all(saveNotePromises)
+        //   .then(res => {
+        //     console.log(res)
+        //   })
+        //   .catch(error => {
+        //     console.log(error);
+        //   });
       })
       .catch(error => {
         console.log(error);
@@ -136,19 +148,19 @@ class PictureNotesContainer extends Component {
         <Loader loading={isLoading} />
         <PictureNotesWrapper>
           <Dropzone
-            className="dropzone"
+            className="Dropzone"
             onDrop={files => this.onDrop(files)}
             accept="image/jpeg,image/jpg,image/tiff,image/gif,image/png"
             disableClick={false}
             multiple={true}
           >
-            <div>
+            <div className="Dropzone-upload-area">
               Try dropping some files here, or click to select files to upload.
             </div>
           </Dropzone>
-          <ImageContainer>
+          <div className={`${this.state.isClassAdded ? "ImageContainer" : ""}`}>
             {this.state.filesPreview}
-          </ImageContainer>
+          </div>
           <div>
             <Button
               variant="contained"
@@ -206,15 +218,10 @@ export default connect(
 )(withStyles(styles)(PictureNotesContainer));
 
 const PictureNotesWrapper = styled.div`
-  padding-top: 25px;
+  padding-top: 15px;
 `;
 
 const ImageWrapper = styled.img`
-  width: 200px;
-  height: 200px;
-`;
-
-const ImageContainer = styled.div`
-  display: inline-grid;
-  grid-template-columns: repeat(3, 1fr);
+  width: 150px;
+  height: 150px;
 `;
