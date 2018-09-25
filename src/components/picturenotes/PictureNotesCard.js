@@ -47,10 +47,12 @@ const PictureNotesCard = props => {
   return (
     <PictureNotesWrapper>
       {customNotes.map((pictureNotes, id) => {
-        let notes = Object.values(pictureNotes);
-        if(notes.length <= 1) {
-          const thumb = notes[0][2];
-          const key = notes[0][0];
+        let pictureNote = Object.values(pictureNotes);
+        if(pictureNote.length <= 1) {
+          const thumb = pictureNote[0].thumbnailUrl;
+          const title = pictureNote[0].title;
+          const note = pictureNote[0].note;
+          const id = pictureNote[0].id;
           return (
             <Droppable 
               droppableId="pictureNote"
@@ -61,8 +63,8 @@ const PictureNotesCard = props => {
                 ref={dropProvided.innerRef}
                 {...dropProvided.droppableProps}
               >
-                <CardWrapper key={key}>
-                  <Draggable draggableId={String(key)} index={id}>
+                <CardWrapper key={id}>
+                  <Draggable draggableId={String(id)} index={id}>
                     {dragprovided => (
                       <div 
                         {...dragprovided.draggableProps}
@@ -76,7 +78,7 @@ const PictureNotesCard = props => {
                                 className={classes.media}
                                 image={thumb || ""}
                                 title="image"
-                                onClick={() => handleClick}
+                                onClick={() => handleClick(pictureNote)}
                               />
                             </Overdrive>
                             <CardContent className="pull-left">
@@ -88,13 +90,13 @@ const PictureNotesCard = props => {
                                   className="pull-left"
                                   align="left"
                                 >
-                                  Title
+                                  {title || 'Title'}
                                 </Typography>
                                 <Typography 
                                   component="p"
                                   align="left"
                                 >
-                                  Note
+                                  {note || 'Note'}
                                 </Typography>
                               </TitleNoteWrapper>
                             </CardContent>
@@ -126,11 +128,11 @@ const PictureNotesCard = props => {
           } else {
             let cardStack = [];
             return(
-              <CardWrapper>
-                {notes.map((card, i) => {
-                  cardStack.push(card[2]);
+              <CardWrapper key={id}>
+                {pictureNote.map((card, i) => {
+                  cardStack.push(card);
                 })}
-                <StackCard images={cardStack}/>
+                <StackCard cardStack={cardStack} handleClick = {handleClick}/>
               </CardWrapper>
             )
           }

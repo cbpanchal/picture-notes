@@ -119,12 +119,13 @@ class PictureNotesContainer extends Component {
     const { uploadHandler, savePictureNote, close } = this.props;
     const inputArray = this.state.inputs;
     console.log(inputArray);
-    uploadHandler(images, close)
+    uploadHandler(images, close, inputArray)
       .then(res => {
-        const saveData = res.map((id, index) => 
-          [id, inputArray[index]]
-        );
-        console.log(saveData);
+        console.log(res);
+        // const saveData = res.map((id, index) => 
+        //   [id, inputArray[index]]
+        // );
+        // console.log(saveData);
         // const saveNotePromises = saveData.map((note, i) => {
         //     savePictureNote(note);
         // });

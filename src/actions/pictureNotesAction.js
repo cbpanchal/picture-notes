@@ -2,7 +2,7 @@ import firebase, { storage } from "../config/Fire";
 import * as actionTypes from "../constants/actionTypes";
 import { convertObjToArr } from "../reducers/helper";
 
-export const uploadImage = (images, close) => dispatch => {
+export const uploadImage = (images, close, inputArray) => dispatch => {
   const { uid } = firebase.auth().currentUser;
   const newImages = {
     fileName: [],
@@ -25,11 +25,13 @@ export const uploadImage = (images, close) => dispatch => {
   const [file, obj] = imagesData;
   const fileArray = Object.values(file);
   const objArray = Object.values(obj);
-  const newArray = fileArray.map((name, index) => [name, objArray[index]]);
+  const newArray = fileArray.map((name, index) => [name, objArray[index], inputArray[index]]);
   const finalArray = newArray.slice(0, -1);
   return new Promise((resolve, reject) => {
-    finalArray.map((file) => {
-      const uploadTask = storage.ref(`images/${file[0]}`).put(file[1]);
+    finalArray.map((file, index) => {
+      const key = new Date().getTime() + index;
+      savePictureNote(key, file[2], oldTimeStamp)(dispatch);
+      const uploadTask = storage.ref(`images/${key}/${file[0]}`).put(file[1]);
       uploadTask.on(
         "state_changed",
         snapshot => {
@@ -84,14 +86,13 @@ export const getPictureNotes = isAuthUser => dispatch => {
   }
 };
 
-export const savePictureNote = notes => dispatch => {
+export const savePictureNote = (key, file, id) => dispatch => {
   const { uid } = firebase.auth().currentUser;
-  const id = notes[0];
-  let title;
-  let note = null;
-  if (notes[1] !== undefined) {
-    title = notes[1].title;
-    note = notes[1].note;
+  let title = '';
+  let note = '';
+  if(file && file !== undefined) {
+    title = file.title;
+    note = file.note;
   }
   const image = {
     title: title || "",
@@ -99,16 +100,8 @@ export const savePictureNote = notes => dispatch => {
   };
     firebase
       .database()
-      .ref(`users/${uid}/image/${id}/category/images/data`)
-      // .ref(`users`).child(uid).child("image").child(id).child("category")
-      //   .child("images").once("value").then(snapshot => {
-      //   if(snapshot.exists()) {
-      //     firebase.database().ref(`users/${uid}/image/${id}/category/images/data`).update(image);
-      //   } else {
-      //     firebase.database().ref(`users/${uid}/image/${id}/category/images/data`).set(image);
-      //   }
-      // })
-      .update(image)
+      .ref(`users/${uid}/image/${id}/category/images/${key}`)
+      .set(image)
       .then(res => {
         console.log(res);
       })
@@ -117,11 +110,11 @@ export const savePictureNote = notes => dispatch => {
       });
 };
 
-export const updatePictureNote = (id, pictureNote) => dispatch => {
+export const updatePictureNote = (note, pictureNote) => dispatch => {
   const { uid } = firebase.auth().currentUser;
     firebase
       .database()
-      .ref(`users/${uid}/image/${id}/data`)
+      .ref(`users/${uid}/image/${note.categoryId}/category/images/${note.id}`)
       .update(pictureNote);
 };
 

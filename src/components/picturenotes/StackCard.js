@@ -1,23 +1,38 @@
 import React, { PureComponent } from "react";
 import '../../style/PictureNotesStyle.css';
-
+import { Typography } from "@material-ui/core";
 class StackCard extends PureComponent {
 
   constructor(props) {
     super(props);
-
   }
 
   render() {
-    const { images } = this.props;
+    const { cardStack, handleClick } = this.props;
     return(
       <div className="stack-container">
         <ul className="stack">
-          {images.map((img, i) => {
-            console.log(img);
+          {cardStack.map((card, i) => {
             return ( 
-              <li key ={i} className="stack-item">
-                <img src={img} alt="Picture note"/>
+              <li key ={card.id} className="stack-item" onClick={() => handleClick(cardStack)}>
+                <img src={card.thumbnailUrl} alt={card.title || ''}/>
+                <div className="stack-card-note">
+                  <Typography
+                    gutterBottom
+                    variant="headline"
+                    component="h4"
+                    className="pull-left"
+                    align="left"
+                  >
+                    {card.title || ''}
+                  </Typography>
+                  <Typography 
+                    component="p"
+                    align="left"
+                  >
+                   {card.note || ''}
+                  </Typography>
+                </div>
               </li>
             )
           })}

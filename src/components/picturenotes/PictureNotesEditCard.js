@@ -73,11 +73,11 @@ class PictureNotesEditCard extends PureComponent {
     this.setState({inputs, isNoteUpdated: true});
   }
   
-  updatePictureNote(id) {
+  updatePictureNote(note) {
     const { updatePictureNote } = this.props;
     const data = this.state.inputs;
     if(data) {
-      updatePictureNote(id, data);
+      updatePictureNote(note, data);
     }
     this.closeNote();
   }
@@ -95,13 +95,12 @@ class PictureNotesEditCard extends PureComponent {
     const { classes, open, pictureNote } = this.props;
     const { isNoteUpdated } = this.state;
     let title, note, id, image = '';
-    if(pictureNote !== undefined && pictureNote !== '') {
-      image = pictureNote.originalUrl;
-      id = pictureNote.id;
-    }
-    if(pictureNote && pictureNote.data !== undefined && pictureNote.data !== '') {
-      title = pictureNote.data.title;
-      note = pictureNote.data.note;
+    console.log('pictureNote', pictureNote[0]);
+    if(pictureNote.length === 1) {
+      image = pictureNote[0].originalUrl;
+      id = pictureNote[0].id;
+      title = pictureNote[0].title;
+      note = pictureNote[0].note;
     }
     return (
       <div>
@@ -116,6 +115,8 @@ class PictureNotesEditCard extends PureComponent {
             outline: "none"
           }}
         >
+        {pictureNote.length <= 1 ? 
+          (
           <PictureNotesCardWrapper className={classes.paper}>
             <Card className={classes.card}>
               <CardActionArea 
@@ -174,6 +175,72 @@ class PictureNotesEditCard extends PureComponent {
               </CardActions>
             </Card>
           </PictureNotesCardWrapper>
+          ) : 
+          (
+            <PictureNotesCardWrapper className={classes.paper}>
+            {pictureNote.map(note => {
+              console.log(">>>>>>", note);
+              <Card className={classes.card}>
+                <CardActionArea 
+                  className={classes.fullWidth}
+                  disableTouchRipple={true}
+                  disableRipple={true}
+                >
+                  <Overdrive id={id || "null"}>
+                    <CardMedia
+                      className={classes.media}
+                      image={note.originalUrl || "null"}
+                      title=""
+                    />
+                  </Overdrive>
+                  <CardContent className="pull-left">
+                    <Input
+                      name="title"
+                      placeholder="Title"
+                      className={classes.input}
+                      inputProps={{
+                        'aria-label': 'Title',
+                        defaultValue: note.title
+                      }}
+                      onChange={this.handleChange}
+                    />
+                    <TextField
+                      name="note"
+                      placeholder="Note"
+                      multiline
+                      rowsMax="4"
+                      className={classes.textField}
+                      margin="normal"
+                      inputProps={{
+                        'aria-label': 'Note',
+                        defaultValue: note.note
+                      }}
+                      onChange={this.handleChange}
+                    />
+                  </CardContent>
+                </CardActionArea>
+                <CardActions>
+                  <Button 
+                    size="small"
+                    color="primary"
+                    onClick={() => this.closeNote()}
+                  >
+                    close
+                  </Button>
+                  <Button 
+                    size="small" 
+                    color="primary"
+                    disabled={!isNoteUpdated}
+                    onClick={() => this.updatePictureNote(note)}>
+                    Update
+                  </Button>
+                </CardActions>
+              </Card>
+            })
+          }
+          </PictureNotesCardWrapper>
+          )
+        }
         </Modal>
       </div>
     );
@@ -183,12 +250,12 @@ class PictureNotesEditCard extends PureComponent {
 PictureNotesEditCard.propTypes = {
   classes: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
-  pictureNote: PropTypes.object.isRequired,
+  pictureNote: PropTypes.array.isRequired,
 };
 
 PictureNotesEditCard.defaultProps = {
   open: false,
-  pictureNote: {},
+  pictureNote: [],
   id: '',
 };
 

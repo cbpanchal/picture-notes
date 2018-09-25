@@ -38,13 +38,14 @@
   list-style: none;
   pointer-events: none;
   width: 225px !important;
-  height: 300px !important;
+  height: 268px !important;
   padding-top: 30px !important;
 }
 .stack-item {
   background: #fff;
   height: 100%;
   width: 100%;
+  cursor: pointer;
   border-radius: 4px;
   text-align: center;
   overflow: hidden;
@@ -64,13 +65,18 @@
 }
 .stack-item img {
   width: 225px;
-  height: 180px;
+  height: 140px;
+}
+.stack-card-note {
+  display: inline-grid;
+  padding: 22px;
 }
 .stack-container .stack li:nth-child(1) {
   opacity: 1;
   pointer-events: auto;
   z-index: 4;
   transform: translate3d(0px, 0px, 0px);
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12)
   /* animation: scaleCard 100ms; */
 }
 .stack-container .stack li:nth-child(2) {

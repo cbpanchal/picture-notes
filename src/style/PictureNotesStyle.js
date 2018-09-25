@@ -2,6 +2,12 @@ import styled from "styled-components";
 
 export const PictureNotesWrapper = styled.div`
   padding-top: 37px;
+  width: 100%;
+  float: left;
+  display: grid;
+  float: left;
+  grid-template-columns: repeat( auto-fit, minmax(250px, 1fr) );
+  grid-row-gap: 20px;
 `;
 
 export const GridImage = styled.img`

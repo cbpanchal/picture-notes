@@ -33,7 +33,7 @@ render() {
     <div>
       <Loader isLoading={isLoading} />
       <PictureNotesListContainer />
-      <AddButton handleOpen = {this.handleOpen}/>
+      <AddButton handleOpen={this.handleOpen}/>
       <PictureNotesModal 
         open= {this.state.open} 
         close= {this.handleClose}

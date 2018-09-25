@@ -35,6 +35,7 @@ const AddButtonWrapper = styled.div`
   float: right;
   text-align: right;
   right: 25px;
+  z-index: 999;
 `;
 
 export default AddButton;

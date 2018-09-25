@@ -13,7 +13,7 @@ class PictureNotesListContainer extends Component {
     this.state = {
       pictureNotes: [],
       open: false,
-      pictureNote: {},
+      pictureNote: [],
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
