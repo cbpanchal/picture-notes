@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { withStyles, Modal, Typography } from "@material-ui/core";
 import PictureNotesDropZone from "../../containers/picturenotes/PictureNotesContainer";
-import { PictureNotesCardWrapper } from '../../style/PictureNotesStyle';
+import { PictureNotesCardWrapper } from "../../style/PictureNotesStyle";
 
 const styles = theme => ({
   paper: {
@@ -44,12 +44,15 @@ class PictureNotesModal extends PureComponent {
 }
 
 PictureNotesModal.propTypes = {
-  classes: PropTypes.object.isRequired,
-  open: PropTypes.bool
+  classes: PropTypes.instanceOf(Object),
+  open: PropTypes.bool,
+  close: PropTypes.func
 };
 
 PictureNotesModal.defaultProps = {
-  open: false
+  classes: {},
+  open: false,
+  close: () => {}
 };
 
 // We need an intermediary variable for handling the recursive nesting.

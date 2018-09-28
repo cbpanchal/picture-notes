@@ -1,5 +1,4 @@
-
-export const convertObjToArr = objectData => {
+const convertObjToArr = objectData => {
   const newArray = [];
   if (objectData !== undefined && objectData) {
     Object.keys(objectData).map(key => {
@@ -8,7 +7,10 @@ export const convertObjToArr = objectData => {
         ...objectData[key]
       };
       newArray.push(data);
+      return false;
     });
   }
   return newArray;
 };
+
+export default convertObjToArr;

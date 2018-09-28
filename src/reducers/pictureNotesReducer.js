@@ -26,7 +26,7 @@ export default function(state = initialState, action) {
       };
     case a.UPDATE_PICTURENOTES:
       return {
-        ...state,
+        ...state
       };
     default:
       return state;

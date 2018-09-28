@@ -24,6 +24,36 @@
   display: inline-grid;
 }
 
+.picture-notes-edit-container {
+  width: 1065px;
+  height: 80%;
+  float: left;
+  display: flex;
+  flex-flow: wrap;
+  overflow-y: auto;
+}
+.update-btn-container {
+  position: fixed;
+  bottom: -43px;
+  right: 0;
+  width: 100%;
+  float: right;
+  text-align: right;
+  background: #fff;
+  padding: 5px 0;
+  margin: auto;
+}
+.update-btn-container-1 {
+  position: relative;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  float: right;
+  text-align: right;
+  background: #fff;
+  padding: 5px 0;
+  margin: auto;
+}
 /* stack card css */
 
 .stack {

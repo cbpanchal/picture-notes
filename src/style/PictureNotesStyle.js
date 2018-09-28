@@ -4,10 +4,9 @@ export const PictureNotesWrapper = styled.div`
   padding-top: 37px;
   width: 100%;
   float: left;
-  display: grid;
+  flex-flow: wrap;
+  display: inline-flex;
   float: left;
-  grid-template-columns: repeat( auto-fit, minmax(250px, 1fr) );
-  grid-row-gap: 20px;
 `;
 
 export const GridImage = styled.img`
@@ -16,18 +15,30 @@ export const GridImage = styled.img`
 `;
 
 export const PictureNotesCardWrapper = styled.div`
-  top:50%;
-  left:50%;
+  top: 50%;
+  left: 50%;
   -ms-transform: translateX(-50%) translateY(-50%);
-  -webkit-transform: translate(-50%,-50%);
-  transform: translate(-50%,-50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
   margin: auto;
   outline: none;
 `;
 
+export const PictureNotesEditCardWrapper = styled.div`
+  top: 50%;
+  left: 50%;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  margin: auto;
+  outline: none;
+  display: -webkit-box;
+`;
+
 export const TitleNoteWrapper = styled.div`
   display: inline-grid;
-  > h2, p {
+  > h2,
+  p {
     text-align: left;
   }
 `;

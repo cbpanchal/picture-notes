@@ -1,10 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import Overdrive from 'react-overdrive';
-import { Droppable, Draggable } from 'react-beautiful-dnd';
-import '../../style/PictureNotesStyle.css';
-
+import Overdrive from "react-overdrive";
+import { Droppable, Draggable } from "react-beautiful-dnd";
+import "../../style/PictureNotesStyle.css";
 import {
   Card,
   CardActionArea,
@@ -16,13 +15,16 @@ import {
   IconButton,
   Tooltip
 } from "@material-ui/core";
-import DeleteIcon  from '@material-ui/icons/Delete';
+import DeleteIcon from "@material-ui/icons/Delete";
 
 import styled from "styled-components";
-import { PictureNotesWrapper, TitleNoteWrapper } from "../../style/PictureNotesStyle";
-import StackCard from '../../components/picturenotes/StackCard';
+import {
+  PictureNotesWrapper,
+  TitleNoteWrapper
+} from "../../style/PictureNotesStyle";
+import StackCard from "./StackCard";
 
-const styles = theme => ({
+const styles = () => ({
   card: {
     width: 225,
     borderRadius: 2
@@ -34,7 +36,7 @@ const styles = theme => ({
     width: "100%"
   },
   button: {
-    margin: 0,
+    margin: 0
   },
   justifyContent: {
     justifyContent: "space-between"
@@ -46,123 +48,124 @@ const PictureNotesCard = props => {
   const customNotes = Object.values(pictureNotes);
   return (
     <PictureNotesWrapper>
-      {customNotes.map((pictureNotes, id) => {
-        let pictureNote = Object.values(pictureNotes);
-        if(pictureNote.length <= 1) {
-          const thumb = pictureNote[0].thumbnailUrl;
-          const title = pictureNote[0].title;
-          const note = pictureNote[0].note;
-          const id = pictureNote[0].id;
+      {customNotes.map((notes, index) => {
+        const pictureNote = Object.values(notes);
+        if (pictureNote.length <= 1) {
+          const { title, note, id, thumbnailUrl } = pictureNote[0];
           return (
-            <Droppable 
+            <Droppable
+              key={index}
               droppableId="pictureNote"
               direction="horizontal"
             >
               {dropProvided => (
-              <div
-                ref={dropProvided.innerRef}
-                {...dropProvided.droppableProps}
-              >
-                <CardWrapper key={id}>
-                  <Draggable draggableId={String(id)} index={id}>
-                    {dragprovided => (
-                      <div 
-                        {...dragprovided.draggableProps}
-                        {...dragprovided.dragHandleProps}
-                        ref={dragprovided.innerRef}
-                      >
-                        <Card className={classes.card} >
-                          <CardActionArea className={classes.fullWidth}>
-                            <Overdrive id={id || "null"}>
-                              <CardMedia
-                                className={classes.media}
-                                image={thumb || ""}
-                                title="image"
-                                onClick={() => handleClick(pictureNote)}
-                              />
-                            </Overdrive>
-                            <CardContent className="pull-left">
-                              <TitleNoteWrapper>
-                                <Typography
-                                  gutterBottom
-                                  variant="headline"
-                                  component="h4"
-                                  className="pull-left"
-                                  align="left"
+                <div
+                  ref={dropProvided.innerRef}
+                  {...dropProvided.droppableProps}
+                >
+                  <CardWrapper key={id}>
+                    <Draggable draggableId={String(id)} index={id}>
+                      {dragprovided => (
+                        <div
+                          {...dragprovided.draggableProps}
+                          {...dragprovided.dragHandleProps}
+                          ref={dragprovided.innerRef}
+                        >
+                          <Card className={classes.card}>
+                            <CardActionArea className={classes.fullWidth}>
+                              <Overdrive id={id || "null"}>
+                                <CardMedia
+                                  className={classes.media}
+                                  image={thumbnailUrl || ""}
+                                  title="image"
+                                  onClick={() => handleClick(pictureNote)}
+                                />
+                              </Overdrive>
+                              <CardContent className="pull-left">
+                                <TitleNoteWrapper>
+                                  <Typography
+                                    gutterBottom
+                                    variant="headline"
+                                    component="h4"
+                                    className="pull-left"
+                                    align="left"
+                                  >
+                                    {title || "Title"}
+                                  </Typography>
+                                  <Typography component="p" align="left">
+                                    {note || "Note"}
+                                  </Typography>
+                                </TitleNoteWrapper>
+                              </CardContent>
+                            </CardActionArea>
+                            <CardActions className={classes.justifyContent}>
+                              <div className="pull-left">
+                                <Button size="small" color="primary">
+                                  Share
+                                </Button>
+                              </div>
+                              <div className="pull-right">
+                                <IconButton
+                                  aria-label="Delete"
+                                  className={classes.button}
                                 >
-                                  {title || 'Title'}
-                                </Typography>
-                                <Typography 
-                                  component="p"
-                                  align="left"
-                                >
-                                  {note || 'Note'}
-                                </Typography>
-                              </TitleNoteWrapper>
-                            </CardContent>
-                          </CardActionArea>
-                          <CardActions className={classes.justifyContent}>
-                            <div className="pull-left">
-                              <Button size="small" color="primary">
-                                Share
-                              </Button>
-                            </div>
-                            <div className="pull-right">
-                              <IconButton aria-label="Delete" className={classes.button}>
-                                <Tooltip title="Delete note">
-                                  <DeleteIcon style={{ fontSize: '18px' }} onClick={() => removePictureNote()}/>
-                                </Tooltip>
-                              </IconButton>
-                            </div>
-                          </CardActions>
-                        </Card>
-                        {dropProvided.placeholder}
-                      </div>
-                    )}
-                  </Draggable>
-                </CardWrapper>
+                                  <Tooltip title="Delete note">
+                                    <DeleteIcon
+                                      style={{ fontSize: "18px" }}
+                                      onClick={() =>
+                                        removePictureNote(pictureNote[0])
+                                      }
+                                    />
+                                  </Tooltip>
+                                </IconButton>
+                              </div>
+                            </CardActions>
+                          </Card>
+                          {dropProvided.placeholder}
+                        </div>
+                      )}
+                    </Draggable>
+                  </CardWrapper>
                 </div>
-              )} 
+              )}
             </Droppable>
-          )
-          } else {
-            let cardStack = [];
-            return(
-              <CardWrapper key={id}>
-                {pictureNote.map((card, i) => {
-                  cardStack.push(card);
-                })}
-                <StackCard cardStack={cardStack} handleClick = {handleClick}/>
-              </CardWrapper>
-            )
-          }
-        })
-      }
-      </PictureNotesWrapper>
+          );
+        }
+        const cardStack = [];
+        return (
+          <CardWrapper key={index}>
+            {pictureNote.map(card => {
+              cardStack.push(card);
+              return false;
+            })}
+            <StackCard
+              cardStack={cardStack}
+              handleClick={handleClick}
+              removePictureNote={removePictureNote}
+            />
+          </CardWrapper>
+        );
+      })}
+    </PictureNotesWrapper>
   );
 };
 
 PictureNotesCard.propTypes = {
-  classes: PropTypes.object.isRequired,
-  pictureNotes: PropTypes.array.isRequired
+  classes: PropTypes.instanceOf(Object),
+  pictureNotes: PropTypes.instanceOf(Array),
+  handleClick: PropTypes.func,
+  removePictureNote: PropTypes.func
 };
 
 PictureNotesCard.defaultProps = {
-  pictureNotes: []
+  pictureNotes: [],
+  classes: {},
+  handleClick: () => {},
+  removePictureNote: () => {}
 };
 
-const Cardlist = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  flex-wrap: wrap;
-`;
-
 const CardWrapper = styled.div`
-  margin: 10px;
+  margin: 10px 10px 50px 10px;
   display: flex;
   float: left;
 `;

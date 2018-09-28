@@ -1,46 +1,42 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import AddButton from '../../components/picturenotes/AddButton';
-import PictureNotesModal from '../../components/picturenotes/PictureNotesModal';
+import AddButton from "../../components/picturenotes/AddButton";
+import PictureNotesModal from "../../components/picturenotes/PictureNotesModal";
 
 import Loader from "../loader/Loader";
 import PictureNotesListContainer from "../picturenotes/PictureNotesListContainer";
 
 class Home extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.state = {
+      open: false
+    };
+  }
 
-constructor(props) {
-  super(props);
-  this.handleOpen = this.handleOpen.bind(this);
-  this.handleClose = this.handleClose.bind(this);
-}
-
-state = {
-  open: false,
-};
-
-handleOpen = () => {
+  handleOpen() {
     this.setState({ open: true });
-};
+  }
 
-handleClose = () => {
+  handleClose() {
     this.setState({ open: false });
-};
+  }
 
-render() {
-  const { isLoading } = this.props;
-  return (
-    <div>
-      <Loader isLoading={isLoading} />
-      <PictureNotesListContainer />
-      <AddButton handleOpen={this.handleOpen}/>
-      <PictureNotesModal 
-        open= {this.state.open} 
-        close= {this.handleClose}
-      />
-    </div>
-  );
-}
+  render() {
+    const { isLoading } = this.props;
+    const { open } = this.state;
+    return (
+      <div>
+        <Loader isLoading={isLoading} />
+        <PictureNotesListContainer />
+        <AddButton handleOpen={this.handleOpen} />
+        <PictureNotesModal open={open} close={this.handleClose} />
+      </div>
+    );
+  }
 }
 
 Home.propTypes = {
