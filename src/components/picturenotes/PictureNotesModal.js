@@ -35,7 +35,6 @@ class PictureNotesModal extends PureComponent {
               Picture note
             </Typography>
             <PictureNotesDropZone close={close} />
-            <SimpleModalWrapped />
           </PictureNotesCardWrapper>
         </Modal>
       </div>
@@ -55,7 +54,4 @@ PictureNotesModal.defaultProps = {
   close: () => {}
 };
 
-// We need an intermediary variable for handling the recursive nesting.
-const SimpleModalWrapped = withStyles(styles)(PictureNotesModal);
-
-export default SimpleModalWrapped;
+export default withStyles(styles)(PictureNotesModal);

@@ -2,7 +2,7 @@ import firebase, { storage } from "../config/Fire";
 import * as actionTypes from "../constants/actionTypes";
 import convertObjToArr from "../reducers/helper";
 
-export const savePictureNote = (key, file, id) => dispatch => {
+export const savePictureNote = (key, file, id, tags) => dispatch => {
   const { uid } = firebase.auth().currentUser;
   let pictureTitle = "";
   let pictureNote = "";
@@ -12,7 +12,8 @@ export const savePictureNote = (key, file, id) => dispatch => {
   }
   const image = {
     title: pictureTitle || "",
-    note: pictureNote || ""
+    note: pictureNote || "",
+    tags: tags.length > 0 ? tags : ""
   };
   firebase
     .database()
@@ -26,7 +27,7 @@ export const savePictureNote = (key, file, id) => dispatch => {
     });
 };
 
-export const uploadImage = (images, close, inputArray) => dispatch => {
+export const uploadImage = (images, close, inputArray, tags) => dispatch => {
   const { uid } = firebase.auth().currentUser;
   const newImages = {
     fileName: [],
@@ -59,7 +60,7 @@ export const uploadImage = (images, close, inputArray) => dispatch => {
   return new Promise((resolve, reject) => {
     finalArray.map((imgFile, index) => {
       const key = new Date().getTime() + index;
-      savePictureNote(key, imgFile[2], oldTimeStamp)(dispatch);
+      savePictureNote(key, imgFile[2], oldTimeStamp, tags)(dispatch);
       const uploadTask = storage
         .ref(`images/${key}/${imgFile[0]}`)
         .put(imgFile[1]);
@@ -80,9 +81,8 @@ export const uploadImage = (images, close, inputArray) => dispatch => {
         },
         () => {
           // completed
-          console.log(newImages.timeStampArray);
           setTimeout(() => {
-            resolve(newImages.timeStampArray);
+            resolve();
             dispatch({
               type: actionTypes.SHOW_LOADER,
               payload: false

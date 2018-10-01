@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 
 import styled from "styled-components";
 import { Button, Input, withStyles, TextField } from "@material-ui/core";
+import CreatableSelect from "../../components/picturenotes/CreatableSelect";
 import Loader from "../loader/Loader";
 import * as action from "../../actions/pictureNotesAction";
 import "../../style/PictureNotesStyle.css";
@@ -34,14 +35,15 @@ class PictureNotesContainer extends Component {
       filesPreview: [],
       imageSelected: true,
       inputs: [],
+      values: [],
       isClassAdded: false
     };
     this.uploadHandler = this.uploadHandler.bind(this);
     this.handleInput = this.handleInput.bind(this);
+    this.handleSelectValues = this.handleSelectValues.bind(this);
   }
 
   onDrop(acceptedFiles) {
-    const { classes } = this.props;
     // console.log('Accepted files: ', acceptedFiles[0].name);
     if (!acceptedFiles.length) {
       return null;
@@ -56,35 +58,8 @@ class PictureNotesContainer extends Component {
         isClassAdded: true
       });
     }
-    const filesPreview = [];
-    filesToBeSent.map((f, i) =>
-      filesPreview.push(
-        <div key={f.preview} className="Grid">
-          <ImageWrapper src={filesToBeSent[i].preview} alt="image preview" />
-          <Input
-            name={`title_${i}`}
-            placeholder="Title"
-            className={classes.input}
-            inputProps={{
-              "aria-label": "Title"
-            }}
-            onChange={e => this.handleInput(e, i)}
-          />
-          <TextField
-            placeholder="Take a note"
-            name={`note_${i}`}
-            multiline
-            rowsMax="4"
-            className={classes.textField}
-            margin="normal"
-            onChange={e => this.handleInput(e, i)}
-          />
-        </div>
-      )
-    );
     this.setState({
       filesToBeSent,
-      filesPreview,
       imageSelected: false,
       images: filesToBeSent
     });
@@ -110,10 +85,9 @@ class PictureNotesContainer extends Component {
   }
 
   uploadHandler() {
-    const { images } = this.state;
+    const { images, inputs, values } = this.state;
     const { uploadHandler, close } = this.props;
-    const { inputs } = this.state;
-    uploadHandler(images, close, inputs)
+    uploadHandler(images, close, inputs, values)
       .then(res => {
         console.log(res);
       })
@@ -122,9 +96,15 @@ class PictureNotesContainer extends Component {
       });
   }
 
+  handleSelectValues(values) {
+    console.log(values);
+    this.setState({ values });
+  }
+
   render() {
-    const { isLoading, close } = this.props;
-    const { isClassAdded, imageSelected, filesPreview } = this.state;
+    const { isLoading, close, classes } = this.props;
+    const { isClassAdded, imageSelected, filesToBeSent } = this.state;
+    console.log(this.state);
     return (
       <div>
         <Loader loading={isLoading} />
@@ -140,11 +120,37 @@ class PictureNotesContainer extends Component {
               Try dropping some files here, or click to select files to upload.
             </div>
           </Dropzone>
-          <div
-            key={filesPreview}
-            className={isClassAdded ? "ImageContainer" : ""}
-          >
-            {filesPreview}
+          <div className={isClassAdded ? "ImageContainer" : ""}>
+            {filesToBeSent.map((f, i) => (
+              <div key={f.preview} className="Grid">
+                <ImageWrapper
+                  src={filesToBeSent[i].preview}
+                  alt="image preview"
+                />
+                <Input
+                  name={`title_${i}`}
+                  placeholder="Title"
+                  className={classes.input}
+                  inputProps={{
+                    "aria-label": "Title"
+                  }}
+                  onChange={e => this.handleInput(e, i)}
+                />
+                <TextField
+                  placeholder="Take a note"
+                  name={`note_${i}`}
+                  multiline
+                  rowsMax="4"
+                  className={classes.textField}
+                  margin="normal"
+                  onChange={e => this.handleInput(e, i)}
+                />
+                <CreatableSelect
+                  handleSelectValues={this.handleSelectValues}
+                  index={i}
+                />
+              </div>
+            ))}
           </div>
           <div>
             <Button
@@ -203,6 +209,6 @@ const PictureNotesWrapper = styled.div`
 `;
 
 const ImageWrapper = styled.img`
-  width: 150px;
-  height: 150px;
+  width: 250px;
+  height: 250px;
 `;

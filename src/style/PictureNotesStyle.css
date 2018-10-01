@@ -15,7 +15,7 @@
   grid-template-columns: repeat(4, 1fr);
   max-height: 515px;
   overflow: auto;
-  grid-column-gap: 0.5em;
+  grid-column-gap: 0.9em;
   grid-row-gap: 1.5em;
   margin-bottom: 15px;
 }
@@ -25,10 +25,11 @@
 }
 
 .picture-notes-edit-container {
-  width: 1065px;
+  width: 100%;
+  max-width: 1065px;
   height: 80%;
   float: left;
-  display: flex;
+  display: flex !important;
   flex-flow: wrap;
   overflow-y: auto;
 }
@@ -44,7 +45,7 @@
   margin: auto;
 }
 .update-btn-container-1 {
-  position: relative;
+  position: sticky;
   bottom: 0;
   right: 0;
   width: 100%;
@@ -53,6 +54,11 @@
   background: #fff;
   padding: 5px 0;
   margin: auto;
+  border-top: 1px solid #757575;
+}
+.react-select-container {
+  width: 250px;
+  padding-top: 13px;
 }
 /* stack card css */
 
