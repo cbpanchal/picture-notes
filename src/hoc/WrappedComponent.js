@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 
 import * as loginAction from "../actions/loginAction";
 import * as pictureNoteAction from "../actions/pictureNotesAction";
+import * as tagAction from "../actions/tagAction";
 
 export default function isAuthenticated(WrappedComponent) {
   class authentication extends Component {
@@ -14,8 +15,9 @@ export default function isAuthenticated(WrappedComponent) {
     }
 
     componentWillReceiveProps(nextProps) {
-      const { history, fetchPictureNotes } = this.props;
+      const { history, fetchPictureNotes, setTagsList } = this.props;
       fetchPictureNotes(nextProps.isAuthUser);
+      setTagsList(nextProps.isAuthUser);
       if (
         nextProps.isAuthUser &&
         (history.location.pathname === "/login" ||
@@ -43,7 +45,8 @@ export default function isAuthenticated(WrappedComponent) {
     bindActionCreators(
       {
         setUser: loginAction.setUser,
-        fetchPictureNotes: pictureNoteAction.getPictureNotes
+        fetchPictureNotes: pictureNoteAction.getPictureNotes,
+        setTagsList: tagAction.setTagsList
       },
       dispatch
     );
@@ -52,6 +55,7 @@ export default function isAuthenticated(WrappedComponent) {
     setUser: PropTypes.func.isRequired,
     isAuthUser: PropTypes.bool,
     fetchPictureNotes: PropTypes.func.isRequired,
+    setTagsList: PropTypes.func.isRequired,
     history: PropTypes.instanceOf(Object)
   };
 

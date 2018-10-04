@@ -2,18 +2,20 @@ import firebase, { storage } from "../config/Fire";
 import * as actionTypes from "../constants/actionTypes";
 import convertObjToArr from "../reducers/helper";
 
-export const savePictureNote = (key, file, id, tags) => dispatch => {
+export const savePictureNote = (key, file, id) => dispatch => {
   const { uid } = firebase.auth().currentUser;
   let pictureTitle = "";
   let pictureNote = "";
+  let pictureTags = "";
   if (file && file !== undefined) {
     pictureTitle = file.title;
     pictureNote = file.note;
+    pictureTags = file.tags;
   }
   const image = {
     title: pictureTitle || "",
     note: pictureNote || "",
-    tags: tags.length > 0 ? tags : ""
+    tags: pictureTags || ""
   };
   firebase
     .database()
@@ -27,7 +29,7 @@ export const savePictureNote = (key, file, id, tags) => dispatch => {
     });
 };
 
-export const uploadImage = (images, close, inputArray, tags) => dispatch => {
+export const uploadImage = (images, close, inputArray) => dispatch => {
   const { uid } = firebase.auth().currentUser;
   const newImages = {
     fileName: [],
@@ -60,7 +62,7 @@ export const uploadImage = (images, close, inputArray, tags) => dispatch => {
   return new Promise((resolve, reject) => {
     finalArray.map((imgFile, index) => {
       const key = new Date().getTime() + index;
-      savePictureNote(key, imgFile[2], oldTimeStamp, tags)(dispatch);
+      savePictureNote(key, imgFile[2], oldTimeStamp)(dispatch);
       const uploadTask = storage
         .ref(`images/${key}/${imgFile[0]}`)
         .put(imgFile[1]);

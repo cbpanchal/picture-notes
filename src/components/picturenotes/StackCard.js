@@ -3,9 +3,11 @@ import "../../style/PictureNotesStyle.css";
 import { Typography, IconButton, Tooltip } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
+import styled from "styled-components";
 
 import PropTypes from "prop-types";
 import Overdrive from "react-overdrive";
+import Chips from "../Chips/Chips";
 
 const styles = () => ({
   button: {
@@ -42,6 +44,9 @@ class StackCard extends PureComponent {
                 <Typography component="p" align="left">
                   {card.note || "Notes"}
                 </Typography>
+                <TagsContainer>
+                  <Chips tags={card.tags} />
+                </TagsContainer>
                 <div className="pull-right">
                   <IconButton
                     aria-label="Delete"
@@ -77,5 +82,15 @@ StackCard.defaultProps = {
   handleClick: () => {},
   removePictureNote: () => {}
 };
+
+const TagsContainer = styled.div`
+  display: inline-block;
+  float: left;
+  text-align: left;
+  width: 100%;
+  padding-top: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+`;
 
 export default withStyles(styles)(StackCard);

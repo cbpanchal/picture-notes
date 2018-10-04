@@ -10,14 +10,14 @@ import {
   CardActions,
   CardContent,
   CardMedia,
-  Button,
   Typography,
   IconButton,
   Tooltip
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-
 import styled from "styled-components";
+import Chips from "../Chips/Chips";
+
 import {
   PictureNotesWrapper,
   TitleNoteWrapper
@@ -39,7 +39,8 @@ const styles = () => ({
     margin: 0
   },
   justifyContent: {
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    float: "right"
   }
 });
 
@@ -51,7 +52,7 @@ const PictureNotesCard = props => {
       {customNotes.map((notes, index) => {
         const pictureNote = Object.values(notes);
         if (pictureNote.length <= 1) {
-          const { title, note, id, thumbnailUrl } = pictureNote[0];
+          const { title, note, id, thumbnailUrl, tags } = pictureNote[0];
           return (
             <Droppable
               key={index}
@@ -98,12 +99,10 @@ const PictureNotesCard = props => {
                                 </TitleNoteWrapper>
                               </CardContent>
                             </CardActionArea>
+                            <div className="chips-container">
+                              <Chips tags={tags} />
+                            </div>
                             <CardActions className={classes.justifyContent}>
-                              <div className="pull-left">
-                                <Button size="small" color="primary">
-                                  Share
-                                </Button>
-                              </div>
                               <div className="pull-right">
                                 <IconButton
                                   aria-label="Delete"

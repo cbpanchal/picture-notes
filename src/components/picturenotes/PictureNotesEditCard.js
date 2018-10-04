@@ -15,7 +15,11 @@ import {
   TextField,
   Button
 } from "@material-ui/core";
+import CreatableSelect from "./CreatableSelect";
+
 import * as action from "../../actions/pictureNotesAction";
+import * as tagAction from "../../actions/tagAction";
+
 import {
   PictureNotesCardWrapper,
   PictureNotesEditCardWrapper
@@ -30,7 +34,8 @@ const styles = theme => ({
   },
   card: {
     maxWidth: 350,
-    borderRadius: 0
+    borderRadius: 0,
+    overflow: "visible"
   },
   media: {
     height: 350,
@@ -40,12 +45,13 @@ const styles = theme => ({
     width: "100%"
   },
   input: {
-    margin: theme.spacing.unit
+    margin: theme.spacing.unit,
+    width: 288
   },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200
+    width: 288
   }
 });
 
@@ -63,6 +69,7 @@ class PictureNotesEditCard extends PureComponent {
     this.updatePictureNote = this.updatePictureNote.bind(this);
     this.updateMultiplePictureNote = this.updateMultiplePictureNote.bind(this);
     this.closeNote = this.closeNote.bind(this);
+    this.handleSelectEditValues = this.handleSelectEditValues.bind(this);
   }
 
   handleChange(event) {
@@ -77,7 +84,6 @@ class PictureNotesEditCard extends PureComponent {
         [event.target.name]: [event.target.value]
       };
     }
-    console.log(inputs);
     this.setState({ inputs, isNoteUpdated: true });
   }
 
@@ -103,11 +109,41 @@ class PictureNotesEditCard extends PureComponent {
         categoryId: [categoryId]
       };
     }
-    console.log(Object.values(multipleInputs));
     this.setState({
       multipleInputs: Object.values(multipleInputs),
       isNoteUpdated: true
     });
+  }
+
+  handleSelectEditValues(value, actionMeta, index, id, categoryId) {
+    const { tags, addTagsToUser } = this.props;
+    if (actionMeta.action === "create-option") {
+      const filteredTags = value.filter(tag => tag.__isNew__); // eslint-disable-line no-underscore-dangle
+      filteredTags.map(tag => delete tag.__isNew__); // eslint-disable-line no-underscore-dangle
+      addTagsToUser([...tags, ...filteredTags]);
+    }
+    this.setState(preState => ({
+      ...preState,
+      inputs: {
+        ...preState.inputs,
+        tags: value
+      },
+      isNoteUpdated: true
+    }));
+    if (id && categoryId) {
+      this.setState(preState => ({
+        ...preState,
+        multipleInputs: {
+          ...preState.multipleInputs,
+          [index]: {
+            ...preState.multipleInputs[index],
+            tags: value,
+            id,
+            categoryId
+          }
+        }
+      }));
+    }
   }
 
   updatePictureNote(note) {
@@ -123,13 +159,13 @@ class PictureNotesEditCard extends PureComponent {
     const { updatePictureNote } = this.props;
     const { multipleInputs } = this.state;
     if (multipleInputs) {
-      multipleInputs.map(input => {
+      Object.values(multipleInputs).map(input => {
         const { id, categoryId } = input;
         delete input.id;
         delete input.categoryId;
         const note = {
-          id: id[0],
-          categoryId: categoryId[0]
+          id,
+          categoryId
         };
         updatePictureNote(note, input);
         return false;
@@ -155,11 +191,13 @@ class PictureNotesEditCard extends PureComponent {
     let picNote;
     let picId;
     let image = "";
+    let picTags;
     if (pictureNote.length === 1) {
       image = pictureNote[0].originalUrl;
       picId = pictureNote[0].id;
       picTitle = pictureNote[0].title;
       picNote = pictureNote[0].note;
+      picTags = pictureNote[0].tags;
     }
     return (
       <div>
@@ -212,6 +250,11 @@ class PictureNotesEditCard extends PureComponent {
                         defaultValue: picNote
                       }}
                       onChange={this.handleChange}
+                    />
+                    <CreatableSelect
+                      isTagEdit
+                      editTags={picTags}
+                      handleSelectEditValues={this.handleSelectEditValues}
                     />
                   </CardContent>
                 </CardActionArea>
@@ -288,6 +331,14 @@ class PictureNotesEditCard extends PureComponent {
                           }}
                           onChange={e => this.handleChangeMultiple(e, i)}
                         />
+                        <CreatableSelect
+                          isTagEdit
+                          editTags={note.tags}
+                          indexData={i}
+                          id={note.id}
+                          categoryId={note.categoryId}
+                          handleSelectEditValues={this.handleSelectEditValues}
+                        />
                       </CardContent>
                     </CardActionArea>
                   </Card>
@@ -328,7 +379,9 @@ PictureNotesEditCard.propTypes = {
   classes: PropTypes.instanceOf(Object),
   open: PropTypes.bool,
   pictureNote: PropTypes.instanceOf(Array),
+  tags: PropTypes.instanceOf(Array),
   updatePictureNote: PropTypes.func,
+  addTagsToUser: PropTypes.func,
   close: PropTypes.func
 };
 
@@ -336,20 +389,27 @@ PictureNotesEditCard.defaultProps = {
   classes: {},
   open: false,
   pictureNote: [],
+  tags: [],
   updatePictureNote: () => {},
+  addTagsToUser: () => {},
   close: () => {}
 };
+
+const mapStateToProps = state => ({
+  tags: state.tags.tagList
+});
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      updatePictureNote: action.updatePictureNote
+      updatePictureNote: action.updatePictureNote,
+      addTagsToUser: tagAction.addTagsToUser
     },
     dispatch
   );
 // We need an intermediary variable for handling the recursive nesting.
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(withStyles(styles)(PictureNotesEditCard));

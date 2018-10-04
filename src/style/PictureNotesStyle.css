@@ -22,11 +22,12 @@
 
 .Grid {
   display: inline-grid;
+  padding-right: 8px;
 }
 
 .picture-notes-edit-container {
   width: 100%;
-  max-width: 1065px;
+  max-width: 1067px;
   height: 80%;
   float: left;
   display: flex !important;
@@ -60,6 +61,22 @@
   width: 250px;
   padding-top: 13px;
 }
+.react-select-edit-container {
+  width: 300px;
+  padding-top: 13px;
+}
+.chips-container {
+  display: inherit;
+  float: left;
+  text-align: left;
+  width: 100%;
+  margin-left: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  border-radius: 15px;
+  width: 210px;
+
+}
 /* stack card css */
 
 .stack {
@@ -68,13 +85,11 @@
   margin: 0 auto;
   position: relative;
   z-index: 104 !important;
-  width: 320px;
-  height: 320px;
   padding: 0;
   list-style: none;
   pointer-events: none;
   width: 225px !important;
-  height: 268px !important;
+  height: 300px !important;
   padding-top: 30px !important;
 }
 .stack-item {
@@ -105,7 +120,7 @@
 }
 .stack-card-note {
   display: inline-grid;
-  padding: 22px;
+  padding: 18px;
 }
 .stack-container .stack li:nth-child(1) {
   opacity: 1;

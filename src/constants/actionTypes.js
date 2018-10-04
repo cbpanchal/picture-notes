@@ -19,3 +19,8 @@ export const SHOW_NOTIFICATION = "SHOW_NOTIFICATION";
 export const UPLOAD_IMAGE = "UPLOAD_IMAGE";
 export const GET_PICTURENOTES = "GET_PICTURENOTES";
 export const UPDATE_PICTURENOTES = "UPDATE_PICTURENOTES";
+
+/* Tags Actions */
+
+export const SET_TAG_LIST = "SET_TAG_LIST";
+export const ADD_TAGS_TO_USER = "ADD_TAGS_TO_USER";

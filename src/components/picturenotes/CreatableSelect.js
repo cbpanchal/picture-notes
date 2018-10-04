@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import ReactSelect from "react-select/lib/Creatable";
-import "../../style/PictureNotesStyle.css";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
+
+import "../../style/PictureNotesStyle.css";
 
 const components = {
   DropdownIndicator: null
@@ -12,49 +15,89 @@ class CreatableSelect extends Component {
     super(props);
     this.state = {
       value: [],
-      options: [
-        { value: "chocolate", label: "Chocolate" },
-        { value: "strawberry", label: "Strawberry" },
-        { value: "vanilla", label: "Vanilla" }
-      ]
+      editValue: [...props.editTags] || []
     };
     this.handleTagChange = this.handleTagChange.bind(this);
+    this.handleEditTagChange = this.handleEditTagChange.bind(this);
   }
 
   handleTagChange(value, actionMeta) {
-    console.group("Value Changed");
-    console.log(value, actionMeta);
-    console.groupEnd();
     const { index } = this.props;
-    console.log({ index });
     this.setState({ value });
-    this.props.handleSelectValues(value);
+    const { handleSelectValues } = this.props;
+    handleSelectValues(value, actionMeta, index);
+  }
+
+  handleEditTagChange(value, actionMeta) {
+    const { handleSelectEditValues, indexData, id, categoryId } = this.props;
+    const { editValue } = this.state;
+    this.setState({
+      ...editValue,
+      editValue: value
+    });
+    handleSelectEditValues(value, actionMeta, indexData, id, categoryId);
   }
 
   render() {
-    const { options, value } = this.state;
-    console.log({ value });
-    return (
+    const { value, editValue } = this.state;
+    const { isTagEdit, tags } = this.props;
+
+    return !isTagEdit ? (
       <ReactSelect
         components={components}
         isClearable
         isMulti
         onChange={this.handleTagChange}
-        placeholder="Type tag and press enter..."
+        placeholder="Tags"
         value={value}
-        options={options}
+        options={tags || []}
         className="react-select-container"
+      />
+    ) : (
+      <ReactSelect
+        components={components}
+        isClearable
+        isMulti
+        onChange={this.handleEditTagChange}
+        placeholder="Tags"
+        value={editValue}
+        options={tags || []}
+        className="react-select-edit-container"
       />
     );
   }
 }
 
 CreatableSelect.propTypes = {
-  handleSelectValues: PropTypes.func
+  handleSelectValues: PropTypes.func,
+  handleSelectEditValues: PropTypes.func,
+  tags: PropTypes.instanceOf(Array),
+  index: PropTypes.number,
+  indexData: PropTypes.string,
+  id: PropTypes.string,
+  categoryId: PropTypes.string,
+  isTagEdit: PropTypes.bool,
+  editTags: PropTypes.instanceOf(Array)
 };
 
 CreatableSelect.defaultProps = {
-  handleSelectValues: () => {}
+  handleSelectValues: () => {},
+  handleSelectEditValues: () => {},
+  tags: [],
+  index: 0,
+  indexData: "",
+  id: "",
+  categoryId: "",
+  isTagEdit: false,
+  editTags: []
 };
 
-export default CreatableSelect;
+const mapStateToProps = state => ({
+  tags: state.tags.tagList
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreatableSelect);

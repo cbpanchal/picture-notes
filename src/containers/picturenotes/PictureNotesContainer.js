@@ -9,6 +9,7 @@ import { Button, Input, withStyles, TextField } from "@material-ui/core";
 import CreatableSelect from "../../components/picturenotes/CreatableSelect";
 import Loader from "../loader/Loader";
 import * as action from "../../actions/pictureNotesAction";
+import * as tagAction from "../../actions/tagAction";
 import "../../style/PictureNotesStyle.css";
 
 const styles = theme => ({
@@ -22,7 +23,7 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200
+    width: 240
   }
 });
 
@@ -32,10 +33,8 @@ class PictureNotesContainer extends Component {
 
     this.state = {
       filesToBeSent: [],
-      filesPreview: [],
       imageSelected: true,
       inputs: [],
-      values: [],
       isClassAdded: false
     };
     this.uploadHandler = this.uploadHandler.bind(this);
@@ -85,9 +84,9 @@ class PictureNotesContainer extends Component {
   }
 
   uploadHandler() {
-    const { images, inputs, values } = this.state;
+    const { images, inputs } = this.state;
     const { uploadHandler, close } = this.props;
-    uploadHandler(images, close, inputs, values)
+    uploadHandler(images, close, inputs)
       .then(res => {
         console.log(res);
       })
@@ -96,15 +95,29 @@ class PictureNotesContainer extends Component {
       });
   }
 
-  handleSelectValues(values) {
-    console.log(values);
-    this.setState({ values });
+  handleSelectValues(values, actionMeta, index) {
+    const { tags, addTagsToUser } = this.props;
+    if (actionMeta.action === "create-option") {
+      const filteredTags = values.filter(tag => tag.__isNew__); // eslint-disable-line no-underscore-dangle
+      filteredTags.map(tag => delete tag.__isNew__); // eslint-disable-line no-underscore-dangle
+      addTagsToUser([...tags, ...filteredTags]);
+    }
+
+    this.setState(preState => ({
+      ...preState,
+      inputs: {
+        ...preState.inputs,
+        [index]: {
+          ...preState.inputs[index],
+          tags: values
+        }
+      }
+    }));
   }
 
   render() {
     const { isLoading, close, classes } = this.props;
     const { isClassAdded, imageSelected, filesToBeSent } = this.state;
-    console.log(this.state);
     return (
       <div>
         <Loader loading={isLoading} />
@@ -152,7 +165,7 @@ class PictureNotesContainer extends Component {
               </div>
             ))}
           </div>
-          <div>
+          <FooterWrapper>
             <Button
               variant="contained"
               color="primary"
@@ -165,7 +178,7 @@ class PictureNotesContainer extends Component {
             <Button size="small" color="primary" onClick={close}>
               close
             </Button>
-          </div>
+          </FooterWrapper>
         </PictureNotesWrapper>
       </div>
     );
@@ -174,27 +187,33 @@ class PictureNotesContainer extends Component {
 
 PictureNotesContainer.propTypes = {
   uploadHandler: PropTypes.func,
+  addTagsToUser: PropTypes.func,
   close: PropTypes.func,
   classes: PropTypes.instanceOf(Object),
+  tags: PropTypes.instanceOf(Array),
   isLoading: PropTypes.bool
 };
 
 PictureNotesContainer.defaultProps = {
   uploadHandler: () => {},
+  addTagsToUser: () => {},
   close: () => {},
   classes: {},
+  tags: [],
   isLoading: false
 };
 
 const mapStateToProps = state => ({
-  isLoading: state.pictureNote.isLoading
+  isLoading: state.pictureNote.isLoading,
+  tags: state.tags.tagList
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       uploadHandler: action.uploadImage,
-      savePictureNote: action.savePictureNote
+      savePictureNote: action.savePictureNote,
+      addTagsToUser: tagAction.addTagsToUser
     },
     dispatch
   );
@@ -211,4 +230,8 @@ const PictureNotesWrapper = styled.div`
 const ImageWrapper = styled.img`
   width: 250px;
   height: 250px;
+`;
+const FooterWrapper = styled.div`
+  top: 10px;
+  position: relative;
 `;
